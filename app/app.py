@@ -96,4 +96,4 @@ def upload_files():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=4000)
+    app.run(port=5000, threaded=True)
