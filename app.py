@@ -32,7 +32,7 @@ def send_mail(
         part["Content-Disposition"] = 'attachment; filename="%s"' % basename(f)
         msg.attach(part)
 
-    username = os.environ.get('USERNAME', None)
+    username = 'new.user.19283'
     password = os.environ.get('PASSWORD', None)
     server = smtplib.SMTP("smtp.gmail.com:587")
     server.starttls()
@@ -45,7 +45,7 @@ def send_mail(
 app = Flask(__name__)
 
 UPLOAD_FOLDER = "."
-SENDER_EMAIL = "bhalla.tanishq2000@gmail.com"
+SENDER_EMAIL = "new.user.19283@gmail.com"
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -68,10 +68,14 @@ def upload_files():
             return "No selected file"
 
         ratio = int(request.form['ratio'])
+        print('The ratio is: ' + str(ratio), file=sys.stderr)
+        print('The ratio is: ' + str(request.form), file=sys.stderr)
         
         if(type(int(ratio)) != type(1) or int(ratio) not in range(1,100)):
             print('Error: Invalid ratio given', file=sys.stderr)
             return 'Error: Invalid ratio given'
+        
+        TO_EMAIL = request.form['name']
 
         fileName = secure_filename(f.filename)
 
@@ -88,7 +92,7 @@ def upload_files():
         width, height, fps = output
         fileName2 = combineFramesAndSaveVideo(fileName, width, height, fps)
 
-        send_mail(SENDER_EMAIL, SENDER_EMAIL, "Hi", "Hi There", [fileName2])
+        send_mail(SENDER_EMAIL, TO_EMAIL, f"Compressed Video by {ratio}", "Here is the video", [fileName2])
         os.remove(fileName)
         os.remove(fileName2)
         return "File Emailed Successfully"
@@ -96,4 +100,4 @@ def upload_files():
 
 
 if __name__ == "__main__":
-    app.run(port=5000, threaded=True)
+    app.run(port=4000, threaded=True, debug=True)

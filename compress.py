@@ -41,21 +41,21 @@ def compressFrames(video, ratio):
     try:
         i=0
         while True:
-            print('In while True!', file=sys.stderr)
+            # print('In while True!', file=sys.stderr)
           
             ret, frame = cap.read()
-            print('Frame read!', file=sys.stderr)
+            # print('Frame read!', file=sys.stderr)
             if(not ret):
                 print('Can\'t capture frames/Video End', file=sys.stderr)
                 break
             i+=1
             height, width, layers =  frame.shape
-            print('Shape taken', file=sys.stderr)
+            # print('Shape taken', file=sys.stderr)
             height=int(height*(ratio/100))
             width=int(width*(ratio/100))
             compressedframe = cv2.resize(frame, (width, height))
-            print('Resizing!', file=sys.stderr)
-            print(f'{width} {height} {fps}', file=sys.stderr)
+            # print('Resizing!', file=sys.stderr)
+            # print(f'{width} {height} {fps}', file=sys.stderr)
             
             cv2.imwrite('./temp/temp_frame_'+ str(i) + '.jpg', compressedframe)
 
@@ -102,40 +102,44 @@ def combineFramesAndSaveVideo(video, width, height, fps):
 
 
 if __name__ == "__main__":
-    
+
     try:
-        spam_spec = importlib.util.find_spec("filetype")
-        if spam_spec is None:
-            raise(Exception)
-        
+    
+        try:
+            spam_spec = importlib.util.find_spec("filetype")
+            if spam_spec is None:
+                raise(Exception)
+            
+        except:
+            print('This program requires filetype package to run. Please install it through: \npip install filetype')
+            exit()
+
+        import filetype
+
+        if(len(sys.argv) < 3):
+            print(f'Insufficient Arguments - {len(sys.argv)} given, 3 required.\nExample: python convert.py filename')
+            exit()
+
+        if(sys.argv[1] not in os.listdir()):
+            print('Error: File does not exist')
+            exit()
+
+
+        if(type(int(sys.argv[2])) != type(1) or int(sys.argv[2]) not in range(1,100)):
+            print('Error: Invalid ratio given')
+            exit()
+        video = sys.argv[1]
+        ratio = int(sys.argv[2])
+
+        if filetype.guess(video).mime.split('/')[0] != 'video':
+            print('Given file is not a video file. Please give a video file.')
+            exit()
+        if('temp' in os.listdir()):
+            print('Please rename the already present temp folder and then run again')
+            exit()
+
+        width, height, fps = compressFrames(video, ratio)
+
+        combineFramesAndSaveVideo(video, width, height, fps)
     except:
-        print('This program requires filetype package to run. Please install it through: \npip install filetype')
-        exit()
-
-    import filetype
-
-    if(len(sys.argv) < 3):
-        print(f'Insufficient Arguments - {len(sys.argv)} given, 3 required.\nExample: python convert.py filename')
-        exit()
-
-    if(sys.argv[1] not in os.listdir()):
-        print('Error: File does not exist')
-        exit()
-
-
-    if(type(int(sys.argv[2])) != type(1) or int(sys.argv[2]) not in range(1,100)):
-        print('Error: Invalid ratio given')
-        exit()
-    video = sys.argv[1]
-    ratio = int(sys.argv[2])
-
-    if filetype.guess(video).mime.split('/')[0] != 'video':
-        print('Given file is not a video file. Please give a video file.')
-        exit()
-    if('temp' in os.listdir()):
-        print('Please rename the already present temp folder and then run again')
-        exit()
-
-    width, height, fps = compressFrames(video, ratio)
-
-    combineFramesAndSaveVideo(video, width, height, fps)
+        shutil.rmtree('./temp')
