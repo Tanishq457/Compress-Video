@@ -1,10 +1,7 @@
 appdirs==1.4.4
 astroid==2.4.2
-certifi==2020.6.20
 click==7.1.2
 colorama==0.4.3
-distlib==0.3.1
-filelock==3.0.12
 filetype==1.0.7
 Flask==1.1.2
 gunicorn==20.0.4
@@ -18,12 +15,10 @@ mypy-extensions==0.4.3
 numpy==1.19.1
 opencv-python==4.4.0.42
 pathspec==0.8.0
-pipenv==2020.8.13
 regex==2020.7.14
 six==1.15.0
 toml==0.10.1
 typed-ast==1.4.1
 typing-extensions==3.7.4.3
-virtualenv-clone==0.5.4
 Werkzeug==1.0.1
 wrapt==1.12.1
